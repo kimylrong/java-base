@@ -23,18 +23,21 @@ public class CompilerAndClassLoader extends ClassLoader{
     }
 
     public byte[] buildClassByte() throws IOException {
+        // 创建临时文件
         String tempDirPath = System.getProperty("user.dir") + "/temp";
         File tempDir = new File(tempDirPath);
         if(!tempDir.exists()){
             tempDir.mkdir();
         }
 
+        // java文件输出
         File javaFile = new File(tempDir, "DemoApp.java");
         FileWriter fileWriter = new FileWriter(javaFile);
         fileWriter.write(source_Code);
         fileWriter.flush();
         fileWriter.close();
 
+        // 编译
         JavaCompiler javaCompiler = ToolProvider.getSystemJavaCompiler();
         StandardJavaFileManager javaFileManager = javaCompiler.getStandardFileManager(null,
                 null, null);
@@ -45,6 +48,7 @@ public class CompilerAndClassLoader extends ClassLoader{
         task.call();
         javaFileManager.close();
 
+        // 输入class文件
         File classFile = new File(tempDir, "com/qiusuo/java/classloader/DemoApp.class");
         FileInputStream classFileReader = new FileInputStream(classFile);
         int size = classFileReader.available();
